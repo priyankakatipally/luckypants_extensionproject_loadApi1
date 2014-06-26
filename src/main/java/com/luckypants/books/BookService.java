@@ -25,9 +25,11 @@ import com.luckypants.command.DeleteBookCommand;
 import com.luckypants.command.GetBookCommand;
 import com.luckypants.command.ListAllAuthorsCommand;
 import com.luckypants.command.ListAllBooksCommand;
+import com.luckypants.command.ListAllImagesCommand;
 import com.luckypants.command.ProvidePackagedFileCommand;
 import com.luckypants.model.Author;
 import com.luckypants.model.Book;
+import com.luckypants.model.Image;
 import com.luckypants.mongo.BooksConnectionProvider;
 //import com.luckypants.mongo.ConnectionProvider;
 import com.luckypants.properties.PropertiesLookup;
@@ -71,6 +73,28 @@ public class BookService {
 		} 
 		return Response.status(200).entity(authorString).build();
 	}
+	
+	
+	@GET
+	@Path("/images")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response listimages() {
+		   ListAllImagesCommand listimages = new ListAllImagesCommand();
+		   ArrayList<Image> list = listimages.execute();
+		   String imageString=null;
+		   try {
+			   imageString = mapper.writeValueAsString(list);
+			   
+		   }catch (Exception e) {
+			   e.printStackTrace();
+			   
+		   }
+		   return Response.status(200).entity(imageString).build();
+	}
+	
+	
+	
+	
 	
 	@GET
 	@Path("/file")
@@ -178,14 +202,14 @@ public class BookService {
 
 	@GET
 	@Path("files/{filename}")
-	@Produces(MediaType.WILDCARD)
+	@Produces("images/jpg")
 	public Response getFile(@PathParam("filename") String filename) {
 		try {
 			ProvidePackagedFileCommand getFile = new ProvidePackagedFileCommand();
 			InputStream is = getFile.execute(filename);
 
 			ResponseBuilder response = Response.ok((Object) is);
-			response.header("Content-Disposition", "attachment; filename=\""
+			response.header("Content-Disposition", "filename=\""
 					+ filename + "\"");
 			return response.build();
 		} catch (Exception e) {
@@ -193,6 +217,24 @@ public class BookService {
 		}
 	}
 
+	@GET
+	@Path("files/{filename}")
+	@Produces(MediaType.WILDCARD)
+	public Response getFile1(@PathParam("filename") String filename) {
+		try {
+			ProvidePackagedFileCommand getFile = new ProvidePackagedFileCommand();
+			InputStream is = getFile.execute(filename);
+
+			ResponseBuilder response = Response.ok((Object) is);
+			response.header("Content-Disposition","attachment; filename=\""
+					+ filename + "\"");
+			return response.build();
+		} catch (Exception e) {
+			return Response.status(404).entity(e.getMessage()).build();
+		}
+	}
+	
+	
 	@GET
 	@Path("inline/{filename}")
 	@Produces(MediaType.WILDCARD)

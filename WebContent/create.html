@@ -9,16 +9,67 @@
 //we are reusing this URL, somove it to a variable
 base_url="/rest/books/";
 meta_url="/rest/metadata/";
+authors_url="/rest/books/authors/";
+image_url="/rest/books/images/";
 $(document).ready(function(){
-    $.getJSON(meta_url+"book",function(data){
-    		$.each(data, function(key, value){
-    			console.log("key" +key);
-    			console.log("value" +value);
-    			if(key!="author" && key!="genres"){
-    				$("div.book_div").append("<br/>Please enter " + key + ":"+"<input type='text' name='"+key+"'"+">");
-    			}
-    		});
-    });
+ 
+	  $.getJSON(meta_url+"book",function(data){
+  		$.each(data, function(key, value){
+  			
+  			if(key!="author" && key!="genres" && key!="img" 
+  				 && key!="_author_id" && key!="imageid"){
+  				console.log("key" +key);
+  				$("div.book_div").append("<br/>Please enter " + key + ":"+"<input type='text' name='"+key+"'"+">");
+  			}
+  		});
+  })
+
+	  $.getJSON(meta_url+"book",function(data){
+	        $.each(data, function(key, value){
+	        if(key=="_author_id"){
+	        $("div.book_div").append("<br/>Please select author: <select class='sauth' name='_author_id'>");
+	        $("div.book_div").append(function(){
+	        $.getJSON(authors_url,function(adata){      	
+	        $.each(adata, function(akey, avalue){
+	        	console.log("value123 "+avalue.fname);
+	        $(".sauth").append("<option value='"+avalue.id+"'>"+avalue.fname+"</option>");
+	        //console.log("<option value='"+avalue.id+"'>"+avalue.fname+"</option>");
+	        });
+	        
+	        });
+	        }
+	        );
+	        $("div.book_div").append("</select>");
+	        }
+	        
+	        });
+	        });
+	 // ends here
+	 
+	 
+	 $.getJSON(meta_url+"book",function(data){
+	        $.each(data, function(key, value){
+	        if(key=="imageid"){
+	        $("div.book_div").append("<br/>Please select image: <select class='simg' name='imageid'>");
+	        $("div.book_div").append(function(){
+	        $.getJSON(image_url,function(adata){      	
+	        $.each(adata, function(akey, avalue){
+	        	console.log("value123 "+avalue.imagename);
+	        $(".simg").append("<option value='"+avalue.imagename+"'>"+avalue.imagename+"</option>");
+	        console.log("<option value='"+avalue.imagename+"'>"+avalue.imagename+"</option>");
+	        });
+	        
+	        });
+	        }
+	        );
+	        $("div.book_div").append("</select>");
+	        }
+	        
+	        });
+	        });
+	 
+	 
+	 
     $.fn.serializeObject = function()
     {
        var o = {};
@@ -49,7 +100,8 @@ $(document).ready(function(){
                 crossDomain: true,
                 dataType: "json",
                 success: function (data, status, jqXHR) {
-                    alert("success");
+                  	//alert(JSON.stringify(data));
+                	  alert("success");
                 },
                 error: function (jqXHR, status) {
                     console.log(jqXHR);

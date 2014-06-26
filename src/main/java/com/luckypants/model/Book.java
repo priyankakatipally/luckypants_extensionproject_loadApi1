@@ -10,6 +10,29 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 public class Book {
 	private String title;
 	@JsonIgnore private Author author;
+	@JsonIgnore private Image img;
+	private String _author_id;
+	private String ISBN;
+	private String genres;
+	private String imageid;
+	
+	
+	public String getImageid() {
+		return imageid;
+	}
+
+	public void setImageid(String imageid) {
+		this.imageid = imageid;
+	}
+
+	public Image getImg() {
+		return img;
+	}
+
+	public void setImg(Image img) {
+		this.img = img;
+	}
+
 	public Author getAuthor() {
 		return author;
 	}
@@ -17,11 +40,6 @@ public class Book {
 	public void setAuthor(Author author) {
 		this.author = author;
 	}
-
-	private String _author_id;
-	private String ISBN;
-	private String genres;
-;
 	
 
 	public String getTitle() {
